@@ -14,10 +14,7 @@ RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
     rm -rf /var/cache/apk/*
 
-# Install PIP packages
-COPY pip.packages.list /tmp/pip.packages.list
-RUN chmod +r /tmp/pip.packages.list && \
-    pip install `cat /tmp/pip.packages.list | tr \"\\n\" \" \"`
+RUN pip install python-jenkins
 
 RUN adduser -D $BUILD_USER -s /bin/sh -G $BUILD_USER_GROUP && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
