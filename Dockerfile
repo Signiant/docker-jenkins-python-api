@@ -14,22 +14,10 @@ RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
     rm -rf /var/cache/apk/*
 
-# Install pip
-RUN cd /tmp && \
-    wget https://bootstrap.pypa.io/get-pip.py && \
-    python ./get-pip.py
-
 # Install PIP packages
 COPY pip.packages.list /tmp/pip.packages.list
 RUN chmod +r /tmp/pip.packages.list && \
     pip install `cat /tmp/pip.packages.list | tr \"\\n\" \" \"`
-
-#install umpire with pre
-
-RUN pip install umpire --pre
-
-# install azure-cli
-RUN npm install azure-cli -g
 
 RUN adduser -D $BUILD_USER -s /bin/sh -G $BUILD_USER_GROUP && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
