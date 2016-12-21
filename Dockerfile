@@ -14,7 +14,7 @@ RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
     rm -rf /var/cache/apk/*
 
-RUN pip install python-jenkins maestroops
+RUN pip install python-jenkins maestroops=0.3.0
 
 RUN adduser -D $BUILD_USER -s /bin/sh -G $BUILD_USER_GROUP && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
