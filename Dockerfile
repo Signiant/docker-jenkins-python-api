@@ -16,7 +16,7 @@ RUN chmod +r /tmp/apk.packages.list && \
 
 RUN pip install python-jenkins maestroops && pip show maestroops
 
-RUN adduser -D $BUILD_USER --uid $BUILD_USER_ID -s /bin/sh -G $BUILD_USER_GROUP && \
+RUN adduser -D $BUILD_USER -u $BUILD_USER_ID -s /bin/sh -G $BUILD_USER_GROUP && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
     echo "$BUILD_USER:$BUILD_PASS" | chpasswd
 
