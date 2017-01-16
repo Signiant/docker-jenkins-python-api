@@ -30,7 +30,7 @@ RUN set -x && \
 # Comment these lines to disable sudo
 RUN apk --update add sudo && \
     rm -rf /var/cache/apk/* && \
-    echo "%${BUILD_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "${BUILD_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 #setup jenkins dir
 RUN mkdir -p /var/lib/jenkins \
