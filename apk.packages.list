@@ -4,3 +4,4 @@ git
 wget
 bash
 bash-doc
+curl
