@@ -5,3 +5,4 @@ wget
 bash
 bash-doc
 curl
+dos2unix
