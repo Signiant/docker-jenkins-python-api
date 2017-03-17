@@ -12,6 +12,7 @@ ENV BUILD_USER_GROUP users
 COPY apk.packages.list /tmp/apk.packages.list
 RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
+    apk add dos2unix --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
     rm -rf /var/cache/apk/*
 
 RUN pip install python-jenkins maestroops && pip show maestroops
