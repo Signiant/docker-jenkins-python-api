@@ -16,7 +16,7 @@ RUN chmod +r /tmp/apk.packages.list && \
     apk add curl --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \    
     rm -rf /var/cache/apk/*
 
-RUN pip install python-jenkins maestroops && pip show maestroops
+RUN pip install python-jenkins docker python-jenkins maestroops && pip show maestroops
 
 RUN adduser -D $BUILD_USER -u $BUILD_USER_ID -s /bin/sh -G $BUILD_USER_GROUP && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
