@@ -17,8 +17,8 @@ RUN chmod +r /tmp/apk.packages.list && \
 
 RUN pip install python-jenkins maestroops && pip show maestroops
 
-RUN adduser -u $BUILD_USER_ID -G $BUILD_USER_GROUP -s /bin/sh -D $BUILD_USER \
-    chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER \
+RUN adduser -u $BUILD_USER_ID -G $BUILD_USER_GROUP -s /bin/sh -D $BUILD_USER && \
+    chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
     echo "$BUILD_USER:$BUILD_PASS" | chpasswd
 
 RUN /usr/bin/ssh-keygen -A
