@@ -2,13 +2,13 @@ FROM python:2.7-alpine
 MAINTAINER devops@signiant.com
 
 # Add ENV vars
-ENV BUILD_USER bldmgr \
-    BUILD_PASS bldmgr \
-    BUILD_USER_ID 10012 \
-    BUILD_USER_GROUP users \
-    JAVA_HOME /usr/lib/jvm/java-1.8-openjdk \
-    SLAVE_ID JENKINS_NODE \
-    SLAVE_OS Linux
+ENV BUILD_USER bldmgr
+ENV BUILD_PASS bldmgr
+ENV BUILD_USER_ID 10012
+ENV BUILD_USER_GROUP users
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+ENV SLAVE_ID JENKINS_NODE
+ENV SLAVE_OS Linux
 
 COPY apk.packages.list /tmp/apk.packages.list
 RUN chmod +r /tmp/apk.packages.list && \
@@ -17,9 +17,9 @@ RUN chmod +r /tmp/apk.packages.list && \
 
 RUN pip install python-jenkins maestroops && pip show maestroops
 
-RUN adduser -u $BUILD_USER_ID -s /bin/sh $BUILD_USER $BUILD_USER_GROUP
-RUN chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER
-RUN echo "$BUILD_USER:$BUILD_PASS" | chpasswd
+RUN adduser -u $BUILD_USER_ID -G $BUILD_USER_GROUP -s /bin/sh -D $BUILD_USER \
+    chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER \
+    echo "$BUILD_USER:$BUILD_PASS" | chpasswd
 
 RUN /usr/bin/ssh-keygen -A
 
