@@ -4,3 +4,4 @@ wget
 bash
 bash-doc
 curl
+openjdk8
