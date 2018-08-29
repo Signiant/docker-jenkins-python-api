@@ -10,6 +10,12 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 ENV SLAVE_ID JENKINS_NODE
 ENV SLAVE_OS Linux
 
+ENV BUILD_DOCKER_GROUP docker
+ENV BUILD_DOCKER_GROUP_ID 1001
+ENV HOME /home/${user}
+
+USER root
+
 COPY apk.packages.list /tmp/apk.packages.list
 RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
@@ -21,29 +27,25 @@ RUN adduser -u $BUILD_USER_ID -G $BUILD_USER_GROUP -s /bin/sh -D $BUILD_USER && 
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
     echo "$BUILD_USER:$BUILD_PASS" | chpasswd
 
-RUN /usr/bin/ssh-keygen -A
+LABEL Description="This is a base image, which provides the Jenkins agent executable (slave.jar)" Vendor="Jenkins project" Version="3.20"
 
-RUN set -x && \
-    echo "UsePrivilegeSeparation no" >> /etc/ssh/sshd_config && \
-    echo "PermitRootLogin no" >> /etc/ssh/sshd_config && \
-    echo "AllowGroups ${BUILD_USER_GROUP}" >> /etc/ssh/sshd_config
+ARG VERSION=3.20
 
-# Comment these lines to disable sudo
-RUN apk --update add sudo && \
-    rm -rf /var/cache/apk/*
-ADD /sudoers.txt /etc/sudoers
-RUN chmod 440 /etc/sudoers
+RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
+  && chmod 755 /usr/share/jenkins \
+  && chmod 644 /usr/share/jenkins/slave.jar
 
-#setup jenkins dir
+# Create the folder we use for Jenkins workspaces across all nodes
 RUN mkdir -p /var/lib/jenkins \
-    && chown -R $BUILD_USER:$BUILD_USER_GROUP /var/lib/jenkins
+  && chown -R ${BUILD_USER}:${BUILD_USER_GROUP} /var/lib/jenkins
 
-EXPOSE 22
+COPY jenkins-slave /usr/local/bin/jenkins-slave
+RUN chmod +x /usr/local/bin/jenkins-slave
+RUN mkdir /home/${BUILD_USER}/.jenkins && chown -R ${BUILD_USER}:${BUILD_USER_GROUP} /home/${BUILD_USER}/.jenkins \
+  && mkdir /home/${BUILD_USER}/workspace && chown -R ${BUILD_USER}:${BUILD_USER_GROUP} /home/${BUILD_USER}/workspace
 
-# This entry will either run this container as a jenkins slave or just start SSHD
-# If we're using the slave-on-demand, we start with SSH (the default)
+#USER ${user}
+#VOLUME /home/${BUILD_USER}/.jenkins
+WORKDIR /home/${BUILD_USER}
 
-ADD start.sh /
-RUN chmod 777 /start.sh
-
-CMD ["sh", "/start.sh"]
+ENTRYPOINT ["/usr/local/bin/jenkins-slave"]
