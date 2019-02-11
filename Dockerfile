@@ -1,4 +1,4 @@
-FROM python:2.7-alpine
+FROM python:3.7-alpine
 MAINTAINER devops@signiant.com
 
 # Add ENV vars
