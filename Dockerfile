@@ -14,10 +14,10 @@ COPY apk.packages.list /tmp/apk.packages.list
 RUN chmod +r /tmp/apk.packages.list && \
     apk --update add `cat /tmp/apk.packages.list` && \
     apk add dos2unix --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted && \
-    apk add curl --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted && \    
+    apk add curl --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community/ --allow-untrusted && \
     rm -rf /var/cache/apk/*
 
-RUN pip install python-jenkins docker maestroops && pip show maestroops
+RUN pip install python-jenkins docker maestroops flake8 && pip show maestroops
 
 RUN adduser -u $BUILD_USER_ID -G $BUILD_USER_GROUP -s /bin/sh -D $BUILD_USER && \
     chown -R $BUILD_USER:$BUILD_USER_GROUP /home/$BUILD_USER && \
